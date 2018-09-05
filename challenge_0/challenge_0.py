@@ -1,3 +1,5 @@
+# Instructions:
+#
 # Write a program that empirically compares two search algorithms for
 # sorted arrays:
 #	- linear search
@@ -27,8 +29,8 @@ def binary_search(el, lst):
 	# Define auxiliary function that takes additional parameters.
 	def binary_search_aux(el, lst, l, r):
 		if r >= l:
-			mid = l + (r - l)//2 		# Compute middle index of table.
-			if lst[mid] == el: 		# If found element, return index.
+			mid = (l + (r - l)//2) + 1  # Compute middle index of table.
+			if lst[mid] == el: 			# If found element, return index.
 				return mid
 			if lst[mid] > el: 			# Else search in appropriate half.
 				return binary_search_aux(el, lst, l, mid - 1)
