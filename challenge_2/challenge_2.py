@@ -23,28 +23,146 @@
 next_line = " "
 
 # Parsing complex numbers from user input ############################################################
-
 def parse_num():
-	raw_in = input()
-	# TODO
+	while True:
+		raw_in = input() 						# Read raw user input.
+		trimmed_in = raw_in.replace(" ", "") 	# Remove spaces.
+		# Check if real part starts with a sign
+		if trimmed_in[0] == "+" or trimmed_in[0] == "-":
+			# Extract values of real and imaginary parts.
+			re_start = 0
+			im_start = trimmed_in[1:].find("+") + 1
+
+			# If plus not found, look for minus.
+			if im_start == 0:
+				im_start = trimmed_in[1:].find("-") + 1
+
+			# Extract.
+			re = trimmed_in[re_start:im_start]
+			im = trimmed_in[im_start:-1]
+
+			# Construct and return complex number.
+			# Check for validity of input.
+			try:
+				result = complex(float(re), float(im)) 
+				return complex(float(re), float(im))
+			except ValueError:
+				print("Could not parse number. Please try again.")
+				return parse_num()
+
+		else:
+			# Extract values of real and imaginary parts.
+			re_start = 0
+			im_start = trimmed_in[1:].find("+") + 1
+
+			# If plus not found, look for minus.
+			if im_start == 0:
+				im_start = trimmed_in[1:].find("-") + 1
+
+			# Extract.
+			re = trimmed_in[re_start:im_start]
+			im = trimmed_in[im_start:-1]
+
+			# Construct and return complex number.
+			# Check for validity of input.
+			try:
+				result = complex(float(re), float(im)) 
+				return complex(float(re), float(im))
+			except ValueError:
+				print("Could not parse number. Please try again.")
+				
+
+######################################################################################################
+
+# Parsing the argument for the nth principal root of unity functionality #############################
+def parse_n():
+	while True:
+		raw_in = input()
+		trimmed_in = raw_in.replace(" ", "")
+		try:
+			res = int(trimmed_in)
+			return res
+		except ValueError:
+			print("Invalid input. Please try again.")
 
 ######################################################################################################
 
 # Command handlers ###################################################################################
+# addition
 def addition():
-	print("Addition")
+	# Parse the two complex numbers.
+	num1 = parse_num()
+	num2 = parse_num()
+	# Compute and return result.
+	return num1 + num2
 
+# subtraction
 def subtraction():
-	print("Subtraction")
+	# Parse the two complex numbers.
+	num1 = parse_num()
+	num2 = parse_num()
+	# Compute and return result.
+	return num1 - num2
 
+# multiplication
 def multiplication():
-	print("Multiplication")
+	# Parse the two complex numbers.
+	num1 = parse_num()
+	num2 = parse_num()
+	# Compute and return result.
+	return num1 * num2
 
+# division
 def division():
-	print("Division")
+	# Parse the two complex numbers.
+	num1 = parse_num()
+	num2 = parse_num()
+	# Compute and return result.
+	return num1 / num2
 
+# powers of principal root of unity
+from math import sin, cos, pi
 def pru():
-	print("Principal root of unity")
+	
+	# Parse n (Which root of unity and its powers to compute and print)
+	n = parse_n()
+
+	# Go over valid powers.
+	for k in range(1, n + 1):
+
+		# Compute the real and imaginary parts of the complex numbers.
+		re = cos((k/n)*2*pi);
+		im = sin((k/n)*2*pi);
+
+		# Check if any part below threshold.
+		if abs(im) < 1e-6:
+			im = 0
+		
+
+		if abs(re) < 1e-6:
+			re = 0
+		
+		# Construct complex number.
+		res = complex(round(re, 5), round(im, 5));
+
+		# Handle rounding errors.
+		if abs(im) > 0.000009:
+			# Get sign of complex part (used for printing).
+			sign_im = "-" if im < 0 else "+"
+			# Print according to sign of imaginary part.
+			if sign_im == "+":
+				print(str(res.real) + "+" + str(res.imag) + "i", end = '')
+			else:
+				print(str(res.real) + str(res.imag) + "i", end = '')
+		else:
+			print(res.real, end = '')
+		
+		# If another power follows, separate with space
+		if k < n:
+			print(" ", end = '');
+		else:
+			print()
+
 #######################################################################################################
 
 # Define a dictionary that maps valid commands to handling functions.
@@ -58,7 +176,19 @@ while(next_line != ""):
 
 	# Check if entered line represents a valid command.
 	if next_line in commands.keys():
-		commands.get(next_line)()
+		# Except for the principal root of unity functionality, get and print result.
+		if next_line != "w":
+			res = commands.get(next_line)()
+			# Get sign of imaginary part (used for printing).
+			sign_im = "-" if res.imag < 0 else "+"
+			# Print result according to sign of imaginary part.
+			if sign_im == "+":
+				print(str(res.real) + "+" + str(res.imag) + "i")
+			else:
+				print(str(res.real) + str(res.imag) + "i")
+		else:
+			commands.get(next_line)()
+
 	# if entered blank line (only the '\n' character), exit program.
 	elif next_line == "":
 		pass
