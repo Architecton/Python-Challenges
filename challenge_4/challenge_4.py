@@ -3,6 +3,7 @@
 
 # The data matrix is given in the file data.txt
 import numpy as np
+import matplotlib.pyplot as plt
 import math
 
 # Get matrix from file.
@@ -50,3 +51,10 @@ def get_heat_map(data, method):
 
 	# return the computed heat map.
 	return heat_map
+
+# Get result.
+heat_map = get_heat_map(data, 'euclidean')
+
+# Plot heatmap.
+plt.imshow(heat_map, cmap='hot', interpolation='nearest')
+plt.show()
